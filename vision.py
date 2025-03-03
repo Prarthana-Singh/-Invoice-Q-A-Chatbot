@@ -1,4 +1,3 @@
-
 import streamlit as st
 import os
 from dotenv import load_dotenv
@@ -30,6 +29,7 @@ def input_image_setup(uploaded_file):
 st.set_page_config(page_title="Gemini Invoice Analyzer", layout="wide")
 
 # Custom CSS for styling
+
 st.markdown("""
     <style>
         /* Style the button */
@@ -41,7 +41,6 @@ st.markdown("""
             padding: 10px 20px;
             border: none;
         }
-
         /* Change button color to black on hover */
         .stButton>button:hover {
             background-color: #000000; /* Black */
@@ -52,7 +51,7 @@ st.markdown("""
 
 
 # Sidebar
-st.sidebar.image("img.png", width=300)
+st.sidebar.image("image.jpg", width=300)
 st.sidebar.title("💡 About This App")
 st.sidebar.write("This app analyzes invoice images and extracts relevant information using Gemini AI.")
 st.sidebar.markdown("---")
@@ -68,16 +67,19 @@ uploaded_file = st.file_uploader("Upload an invoice image (JPG, JPEG, PNG):", ty
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Invoice", use_column_width=True)
+    # st.image(image, caption="Uploaded Invoice", width=200)
+    st.image(image, caption="🖼️ Uploaded Invoice", use_column_width=True)
+
 
 submit = st.button("Analyze Invoice 🧾")
 
 if submit and uploaded_file:
-    with st.spinner("Processing the image... 🕒"):
-        image_data = input_image_setup(uploaded_file)
-        response = get_gemini_response("You are an expert in invoices.", image_data, input)
-        st.success("✅ Analysis Complete!")
-        st.subheader("🔍 Extracted Information:")
-        st.write(response)
-else:
-    st.warning("⚠️ Please upload an image and enter a question.")
+    if not input.strip():  # Check if the input is empty or just spaces
+        st.warning("⚠️ Please enter a question before analyzing the invoice.")
+    else:
+        with st.spinner("Processing the image... 🕒"):
+            image_data = input_image_setup(uploaded_file)
+            response = get_gemini_response("You are an expert in invoices.", image_data, input)
+            st.success("✅ Analysis Complete!")
+            st.subheader("🔍 Extracted Information:")
+            st.write(response)
